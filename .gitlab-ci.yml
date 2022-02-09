@@ -1,0 +1,42 @@
+image: node:latest
+
+stages:
+    - build
+    - test
+    - publish
+    - deploy
+
+cache:
+    paths:
+    - node_modules/
+    - mocha/
+    - chai/
+
+install_dependencies:
+    stage: build
+    script: 
+        - npm install
+        - which mocha
+    artifacts:
+        paths:
+           - node_modules/
+           - mocha/
+           - chai/
+
+testing:
+      stage: test
+      script: 
+        - |
+          timeout --preserve-status 5s npm start &
+          npm test
+          
+publishing:
+  stage: publish
+  script:
+    - docker build -t sergeig/example-gitlab-cicd:$TAG .
+       
+deployment:
+  stage: deploy 
+  script:
+    - docker login --username=$DOCKER_USER --password=$DOCKER_PASS
+    - docker push sergeig/example-gitlab-cicd:$TAG
