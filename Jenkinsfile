@@ -1,27 +1,21 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:lts-bullseye-slim'
-            args '-p 3000:3000'
+  agent any
+  stages {
+
+    stage('Stage 1') {
+      steps {
+        script {
+          echo 'Stage 1'
         }
+      }
     }
-    stages {
-        stage('Build') {
-            steps {
-                sh 'npm install'
-            }
+
+    stage('Stage 2') {
+      steps {
+        script {
+          echo 'Stage 2'
         }
-       stage('Test') {
-            steps {
-                sh './jenkins/scripts/test.sh'
-            }
-        }
-      stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-                input message: 'Finished using the web site? (Click "Proceed" to continue)'
-                sh './jenkins/scripts/kill.sh'
-            }
-        }
+      }
     }
-}
+
+  }
